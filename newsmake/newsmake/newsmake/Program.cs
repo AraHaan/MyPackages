@@ -18,11 +18,12 @@ namespace Newsmake
     using System.Text;
     using System.Threading.Tasks;
     using Elskom.Generic.Libs;
+    using Elskom.Generic.Libs.System.Diagnostics.Debug;
     using newsmakeResources = Elskom.Generic.Libs.Properties;
 
     internal static class Program
     {
-        [MiniDump(Text = "Please send a copy of {0} to https://github.com/Elskom/Sdk/issues by making an issue and attaching the log(s) and mini-dump(s).", DumpType = MinidumpTypes.ValidTypeFlags)]
+        [MiniDump(Text = "Please send a copy of {0} to https://github.com/Elskom/Sdk/issues by making an issue and attaching the log(s) and mini-dump(s).", DumpType = MINIDUMP_TYPE.MiniDumpValidTypeFlags)]
         internal static async Task<int> Main(string[] args)
         {
             MiniDumpAttribute.DumpMessage += MiniDump_DumpMessage;
