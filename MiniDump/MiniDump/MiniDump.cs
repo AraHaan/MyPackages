@@ -5,13 +5,14 @@
 
 namespace Elskom.Generic.Libs
 {
-    using System;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Reflection;
-    using System.Runtime.InteropServices;
-    using System.Text;
+    using Elskom.Generic.Libs.System.Diagnostics.Debug;
+    using global::System;
+    using global::System.Diagnostics;
+    using global::System.Globalization;
+    using global::System.IO;
+    using global::System.Reflection;
+    using global::System.Runtime.InteropServices;
+    using global::System.Text;
 
     internal static class MiniDump
     {
@@ -60,7 +61,7 @@ namespace Elskom.Generic.Libs
             return 1;
         }
 
-        private static void MiniDumpToFile(string fileToDump, MinidumpTypes dumpType)
+        private static void MiniDumpToFile(string fileToDump, MINIDUMP_TYPE dumpType)
         {
             using var fsToDump = File.Open(fileToDump, FileMode.Create, FileAccess.ReadWrite, FileShare.Write);
             var error = MiniDumpWriteDump(fsToDump.SafeFileHandle, dumpType);
@@ -74,15 +75,14 @@ namespace Elskom.Generic.Libs
             }
         }
 
-        private static unsafe int MiniDumpWriteDump(SafeHandle hFile, MinidumpTypes dumpType)
+        private static int MiniDumpWriteDump(SafeHandle hFile, MINIDUMP_TYPE dumpType)
         {
-            var exceptionInformation = GetExceptionInformation();
-            _ = SafeNativeMethods.MiniDumpWriteDump(
-                SafeNativeMethods.GetCurrentProcess_SafeHandle(),
-                SafeNativeMethods.GetCurrentProcessId(),
+            _ = PInvoke.MiniDumpWriteDump(
+                PInvoke.GetCurrentProcess_SafeHandle(),
+                PInvoke.GetCurrentProcessId(),
                 hFile,
                 dumpType,
-                &exceptionInformation,
+                GetExceptionInformation(),
                 default,
                 default);
             return Marshal.GetLastWin32Error();
@@ -93,10 +93,10 @@ namespace Elskom.Generic.Libs
             {
                 ClientPointers = false,
                 ExceptionPointers = GetExceptionPointers(),
-                ThreadId = SafeNativeMethods.GetCurrentThreadId(),
+                ThreadId = PInvoke.GetCurrentThreadId(),
             };
 
-        private static IntPtr GetExceptionPointers()
+        private static nint GetExceptionPointers()
         {
             // because we target .NET Standard 2.0 we need to probe for
             // Marshal.GetExceptionPointers using reflection then call
@@ -107,7 +107,7 @@ namespace Elskom.Generic.Libs
                 null,
                 Type.EmptyTypes,
                 null);
-            return (IntPtr?)method?.Invoke(null, null) ?? IntPtr.Zero;
+            return (nint?)method?.Invoke(null, null) ?? IntPtr.Zero;
         }
 
         private static string PrintExceptions(Exception exception)

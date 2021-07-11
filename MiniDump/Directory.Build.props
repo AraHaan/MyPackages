@@ -24,7 +24,7 @@
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseCsWin32SourceGen>true</UseCsWin32SourceGen>
     <GitBuildInfoAssemblyType>MiniDump</GitBuildInfoAssemblyType>
   </PropertyGroup>
 
